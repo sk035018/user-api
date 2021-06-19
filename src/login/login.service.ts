@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { LoginCredentials } from './login.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class LoginService {
@@ -8,11 +9,16 @@ export class LoginService {
 
     async login(loginCredentials: LoginCredentials): Promise< string | boolean > {
         const user = await this.userService.findByEmail(loginCredentials.email);
-        
-        if(user && user.password === loginCredentials.password) {
-            return "Logged In Successfully !!!"
-        }
 
-        return false;
+        if(user) {
+            const matchResult = await bcrypt.compare(
+                loginCredentials.password,
+                user.password
+            );
+            if(matchResult) {
+                return "Logged In Successfully !!!"
+            }
+            return false;
+        }
     }
 }
