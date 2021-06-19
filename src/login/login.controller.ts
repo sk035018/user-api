@@ -1,16 +1,17 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 import { LoginService } from './login.service';
+import { Response } from 'express';
 
 @Controller('login')
 export class LoginController {
     constructor(private loginService: LoginService) {}
 
     @Post()
-    async login(@Body() body): Promise< string > {
+    async login(@Body() body, @Res() res: Response): Promise< void > {
         const serviceResponse = await this.loginService.login(body);
         if(serviceResponse) {
-            return String(serviceResponse);
+            res.status(HttpStatus.OK).send(serviceResponse);
         }
-        return `You are not what you told !!!`
+        res.status(HttpStatus.UNAUTHORIZED).send(`You are not what you told !!!`);
     }
 }

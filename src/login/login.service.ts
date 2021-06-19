@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { LoginCredentials } from './login.interface';
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class LoginService {
@@ -16,7 +17,8 @@ export class LoginService {
                 user.password
             );
             if(matchResult) {
-                return "Logged In Successfully !!!"
+                const token = jwt.sign({id: user.id, email: user.email}, process.env.SECRET_KEY);
+                return token;
             }
             return false;
         }
