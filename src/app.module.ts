@@ -3,6 +3,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './user/user.module';
 import { LoginModule } from './login/login.module';
 import { SignupModule } from './signup/signup.module';
+import { CommonModule } from './common/common.module';
+import { MiddlewareModule } from './middleware/middleware.module';
 
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = process.env;
 
@@ -20,7 +22,9 @@ const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = process.env;
         }),
       UsersModule,
       LoginModule,
-      SignupModule
+      SignupModule,
+      CommonModule,
+      MiddlewareModule
     ]
 })
 export class AppModule {}

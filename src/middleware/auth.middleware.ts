@@ -1,17 +1,19 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware, HttpStatus } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { UserService } from './user/user.service';
-import * as jwt from 'jsonwebtoken';
-import { CustomRequest as Request } from './customResponse';
-import { HttpStatus } from '@nestjs/common';
+import { UserService } from '../user/user.service';
+import { JsonwebToken } from '../common/jwt';
+import { CustomRequest as Request } from '../common/customResponse';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-    constructor(private userService: UserService) {}
+    constructor(
+        private userService: UserService,
+        private jsonwebToken: JsonwebToken    
+    ) {}
     async use(req: Request, res: Response, next: NextFunction) {
         try {
             const token = req.header('authorization').split(' ')[1];
-            const payload = jwt.verify(token, process.env.SECRET_KEY);
+            const payload = this.jsonwebToken.parseToken(token);
             const user = await this.userService.findById(payload.id);
             req.user = user;
             next();

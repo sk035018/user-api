@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { UserAttributes } from '../user/user.interface';
-import * as bcrypt from 'bcrypt';
+import { Bcrypt } from '../common/bcrypt';
 
 @Injectable()
 export class SignupSevice {
-    constructor(private userService: UserService) {}
+    constructor(
+        private userService: UserService,
+        private bcrypt: Bcrypt    
+    ) {}
 
     async signup(userAttributes: UserAttributes): Promise< string > {
-        const hashedPassword = await bcrypt.hash(userAttributes.password, 10);
+        const hashedPassword = await this.bcrypt.hash(userAttributes.password);
         userAttributes.password = hashedPassword;
         await this.userService.create(userAttributes);
         return `Successfully joined our community !!!`
