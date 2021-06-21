@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Post, Delete, Param, Query, Body} from '@nestjs/common';
+import { Controller, Get, Put, Delete, Param, Query, Body, ParseIntPipe} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserAttributes } from './user.interface';
 
@@ -15,17 +15,17 @@ export class UserController {
     }
 
     @Get(':userId')
-    async findById(@Param('userId') userId): Promise< UserAttributes > {
+    async findById(@Param('userId', ParseIntPipe) userId: number): Promise< UserAttributes > {
         return await this.userService.findById(userId);
     }
 
     @Put()
-    async put(@Body() body): Promise< UserAttributes > {
+    async put(@Body() body: UserAttributes): Promise< UserAttributes > {
         return await this.userService.put(body);
     }
 
     @Delete(':userId')
-    async delete(@Param('userId') userId): Promise< number > {
+    async delete(@Param('userId', ParseIntPipe) userId: number): Promise< number > {
         return await this.userService.delete(userId);
     }
 }
